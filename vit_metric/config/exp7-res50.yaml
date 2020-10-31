@@ -1,0 +1,60 @@
+MODEL:
+  META_ARCHITECTURE: "'MetricLearningArch'"
+  WEIGHTS: "detectron2://ImageNetPretrained/torchvision/R-50.pkl"
+  PIXEL_MEAN: [123.675, 116.280, 103.530]
+  PIXEL_STD: [58.395, 57.120, 57.375]
+  METRIC_LEARN:
+    MID_FC_FEATURES: 512
+    SUBCENTRES_K: 1
+    MARGINS:
+      ADAPTIVE: False
+      VALUE: 0.5
+    FEATURE_SCALER: 64.0
+    EASY_MARGIN: True
+    LOSS:
+      NAME: 'ArcMarginModelLoss'
+      FOCAL_LOSS: False
+      GAMMA: 2.0 # for focal loss only
+  RESNETS:
+    NORM: BN # With batch size 32 we could just enable BN instead pf FreezeBN
+    DEPTH: 50
+    STRIDE_IN_1X1: False
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+DATASETS:
+  TRAIN: ("TRAIN",)
+  TEST: ("EVAL",)
+SOLVER:
+  CHECKPOINT_PERIOD: 4000 #5000
+  IMS_PER_BATCH: 32
+  BASE_LR: 0.002
+  MOMENTUM: 0.9
+  STEPS: (200000,300000)
+  MAX_ITER: 554400
+  WARMUP_FACTOR: 0.1
+  WARMUP_ITERS: 500
+  WEIGHT_DECAY: 0.0001
+#  OPTIMIZER: "ADAMW"
+  BACKBONE_MULTIPLIER: 0.1
+  CLIP_GRADIENTS:
+    ENABLED: True
+    CLIP_TYPE: value
+    CLIP_VALUE: 0.01
+    NORM_TYPE: 2.0
+TEST:
+  EVAL_PERIOD: 2000
+INPUT:
+  IMAGE_SIZE_MSQ: 224
+#  MIN_SIZE_TRAIN: (480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800)
+#  CROP: # https://github.com/facebookresearch/detectron2/blob/master/detectron2/config/defaults.py
+#    ENABLED: False
+#    TYPE: "absolute_range"
+#    SIZE: (384, 600)
+  FORMAT: "RGB"
+DATALOADER:
+  NUM_WORKERS: 0
+VERSION: 2
+DATA_CONF:
+  EVAL_SAMPLE_RATE: 0.002
+  LABEL_FILE: "train_k_fold2_c27756.csv"
+  VAL_FOLD: 0
+
