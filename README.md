@@ -20,7 +20,10 @@ Data should be preprocessed/split by this [script](preprocess/preprocess.py)
 
 The code will get rid of categories with samples < 15 images.
 
-Eventually it will left 27756 categories and 1223195 samples
+Eventually it will left 27756 categories and 1223195 samples. 
+The original kaggle dataset contains 1.6M images
+
+By doing that we simplify the problems and concentrate on the basic model building first.
 
 # Previous Work and Review
 
@@ -34,7 +37,7 @@ They all have something in common:
 `Backbone + Bottleneck Layer (512) + ArcMarginHead + CE-Loss/Focal-Loss`. 
 2. All of them stressed the importance of `post-processing`, which could bring a lot of performance gain.
 3. They all demonstrated that global feature is good enough without attention to local features
-4. They all used ensembling method to boost performance but it is also worth to notice that it is not 
+4. They all used ensembling method to boost performance but it also worth noticing that it is not 
 a significant boost considering the amount of computing power involved
 5. Among the top3 places solutions, all of them used ArcMargin to build the loss function. 
 It was originally used in face recognition.
@@ -68,6 +71,7 @@ which can take a few days without distributed training.
 
 ## Loss Function
 [Loss Explain](https://www.groundai.com/project/arcface-additive-angular-margin-loss-for-deep-face-recognition/1)
+
 Stealing Loss function implementation from:
 
 https://github.com/foamliu/InsightFace-v2/blob/e7b6142875f3f6c65ce97dd1b2b58156c5f81a3d/models.py#L327
