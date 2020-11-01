@@ -68,6 +68,10 @@ It only gets `0.04` for acc (0-1) and `0.006` for gap(0-1) after one epoch.
 Typical training schedule recommended by top Kaggler require 10 epoch, 
 which can take a few days without distributed training.
 
+```bash
+cd vit_metric
+python train_net.py --config-file config/exp11-res50.yaml 
+```
 
 ## Loss Function
 [Loss Explain](https://www.groundai.com/project/arcface-additive-angular-margin-loss-for-deep-face-recognition/1)
