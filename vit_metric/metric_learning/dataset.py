@@ -94,17 +94,13 @@ class CSVDataAPI:
 
     def get_df(self, sort_by_label=True):
         data_dir = self.data_dir
-        df = pd.read_csv(os.path.join(data_dir, 'train_k_fold2.csv'))
+        df = pd.read_csv(os.path.join(data_dir, self.label_file))
 
-        # df_train = df.copy(deep=True)
-        # df_train = pd.read_csv(os.path.join(data_dir, 'train.csv'))
         if sort_by_label == 0:
             pass
         else:
-            cls_81313 = df.landmark_id.unique()
-            _dfr_tmp = df.set_index('landmark_id')
-            _dfr_tmp = _dfr_tmp.loc[cls_81313]
-            df = _dfr_tmp.reset_index()
+            df = df.sort_values(by=['landmark_id'])
+            df = df.reset_index(drop=True)
 
         df['filepath'] = df['id']. \
             apply(lambda x: os.path.join(data_dir, 'train', x[0], x[1], x[2], f'{x}.jpg'))

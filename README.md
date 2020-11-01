@@ -5,9 +5,7 @@ landmark recognition, metric learning become a popular option to the problem.
 
 This demo project is an extension of [detectron2](https://github.com/facebookresearch/detectron2).
 
-Set up environment with docker
-
-
+[Set up environment with docker](docker/quick_start.md)
 
 # Data
 
@@ -16,27 +14,52 @@ You may use kaggle API to download the data:
 # make sure `kaggle.json` is copied to /.kaggle/kaggle.json
 . script/fectch_data.sh
 ```
-The dataset is a 100GB zip file and may take a while to download and unzip
+The dataset is a 100GB zip file and may take a while to download and unzip.
 
-CFG:
-https://github.com/psinger/kaggle-landmark-recognition-2020-1st-place/blob/3d39374f261de1762cddf83cec0d2f7b35efde45/configs/config4.py
+Data should be preprocessed/split by this [script](preprocess/preprocess.py)
+The code 
 
 # Previous Work and Review
-Among the top3 places solutions
-ArcMargin 
+
+1. [Kaggle Landmark 1st place solution](https://github.com/ruodingt/kaggle-landmark-recognition-2020-1st-place)
+2. [Kaggle Landmark 2nd place solution](https://github.com/ruodingt/instance_level_recognition)
+3. [Kaggle Landmark 3rd place solution](https://github.com/ruodingt/Google-Landmark-Recognition-2020-3rd-Place-Solution)
+
+
+They all have something in common:
+1. In terms of model architecture all of the top three more or less used similar solution:
+`Backbone + Bottleneck Layer (512) + ArcMarginHead + CE-Loss/Focal-Loss`.
+2. All of them addressed the importance of `post-processing`, which could bring a lot of performance gain.
+3. They all demonstrated that global feature is good enough without attention to local features
+4. They all used ensembling method to boost performance but it is also worth to notice that it is not 
+a significant boost considering the amount of computing power involved
+5. Among the top3 places solutions, all of them used ArcMargin to build the loss function. 
+It was originally used in face recognition 
+
+
+# Challenges
+The biggest challenges of this specific problem came from the loss function itself.
+
+It seems the arcface tends to get stuck at local optimum.
+
+Here is some discussion around the training of `ArcMargin`:
+1. https://www.kaggle.com/c/recursion-cellular-image-classification/discussion/109987
 
 
 # Experiment and Results
+Due to limited time committed and computing power, I haven't be able to produce any meaningful
+result at this stage.
 
+Our default setting only includes `NUM_CLASSES: 64016` categories instead of all the 80K.
+We filtered out categories in the `train.csv` which have less than 15 images/category.
 
+With [exp7-res50.yaml](vit_metric/config/exp7-res50.yaml)
 
-# Reference
-1. [Kaggle Landmark 1st place solution]()
-1. [Kaggle Landmark 2nd place solution]()
-1. [Kaggle Landmark 3rd place solution]()
 
 ## Loss Function
+[Loss Explain](https://www.groundai.com/project/arcface-additive-angular-margin-loss-for-deep-face-recognition/1)
 Stealing Loss function implementation from:
 https://github.com/foamliu/InsightFace-v2/blob/e7b6142875f3f6c65ce97dd1b2b58156c5f81a3d/models.py#L327
-
 https://github.com/ronghuaiyang/arcface-pytorch/blob/47ace80b128042cd8d2efd408f55c5a3e156b032/models/metrics.py#L10
+
+

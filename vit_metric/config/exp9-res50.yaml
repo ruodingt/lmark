@@ -56,6 +56,6 @@ DATALOADER:
 VERSION: 2
 DATA_CONF:
   EVAL_SAMPLE_RATE: 0.002
-  LABEL_FILE: "train_k_fold2_c27756.csv"
+  LABEL_FILE: "train_k_fold2_c27756_ts1223195.csv"
   VAL_FOLD: 0
 

@@ -62,6 +62,11 @@ class ArcSubCentre(nn.Module):
                 nn.Linear(in_features=in_features, out_features=embedding_size, bias=False),
                 nn.BatchNorm1d(embedding_size),
             )
+        elif neck_type == "BL":
+            self.neck = nn.Sequential(
+                nn.BatchNorm1d(in_features),
+                nn.Linear(in_features=in_features, out_features=embedding_size, bias=True),
+            )
         elif neck_type == "":
             self.dense_layer = torch.nn.Linear(in_features=in_features, out_features=embedding_size)
 
