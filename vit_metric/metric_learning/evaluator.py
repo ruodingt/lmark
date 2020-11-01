@@ -132,7 +132,7 @@ class ClsDatasetEvaluator(DatasetEvaluator):
         val_out.update(val_loss)
 
         val_out_ordered = OrderedDict()
-        val_out_ordered['image_cls'] = val_out
+        val_out_ordered['eval'] = val_out
         pprint.pprint(val_out)
         cc_pred = Counter(pred_labels.tolist())
 

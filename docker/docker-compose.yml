@@ -1,0 +1,30 @@
+version: "2.3"
+services:
+  detectron2:
+    restart: always
+    build: # define the image / build for the container
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID:-1000}
+    runtime: nvidia  # TODO: Exchange with "gpu: all" in the future (see https://github.com/facebookresearch/detectron2/pull/197/commits/00545e1f376918db4a8ce264d427a07c1e896c5a).
+    shm_size: "8gb"
+    ulimits: # I cannot remember what it is
+      memlock: -1
+      stack: 67108864
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - /datavol:/datavol:rw # mount data volume
+      - /home/ec2-user/detectron2:/home/appuser/detectron2:rw # mount host machine folder in docker file system - host_dir: container_dir: (rw/ro)
+    environment:
+      - DISPLAY=$DISPLAY
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports: # port forwarding - host_port:internal_docker_port
+      - '6022:22'
+      - '6020:5000'
+      - '6026:6006'
+      - '6028:8888'
+      - '6060:8080'
+
+
+

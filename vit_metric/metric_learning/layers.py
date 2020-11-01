@@ -1,12 +1,6 @@
 import math
-import numpy as np
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn.parameter import Parameter
-from torch.autograd import Variable
-from torch.hub import load_state_dict_from_url
-from torchvision.models.resnet import ResNet, Bottleneck
 
 import torch
 
@@ -35,7 +29,7 @@ class ArcSubCentre(nn.Module):
     https://github.com/deepinsight/insightface/tree/master/recognition/SubCenter-ArcFace
     """
 
-    def __init__(self, in_features, out_features, k=3, mid_layer_size=512):
+    def __init__(self, in_features, out_features, k=3, embedding_size=512, neck_type='A'):
         """
 
         Args:
@@ -44,14 +38,36 @@ class ArcSubCentre(nn.Module):
             k:
         """
         super().__init__()
-        if mid_layer_size > 0:
-            self.dense_layer = torch.nn.Linear(in_features=in_features, out_features=mid_layer_size)
-            self.weight = nn.Parameter(torch.FloatTensor(out_features * k, mid_layer_size))  # (N*K)*F
-        else:
-            self.dense_layer = None
-            self.weight = nn.Parameter(torch.FloatTensor(out_features * k, in_features))  # (N*K)*F
+        if embedding_size == 0:
+            raise NotImplementedError()
 
+        self.neck_type = neck_type
+
+        # https://www.groundai.com/project/arcface-additive-angular-margin-loss-for-deep-face-recognition
+        if neck_type == "LBA":
+            self.neck = nn.Sequential(
+                nn.Linear(in_features=in_features, out_features=embedding_size, bias=True),
+                nn.BatchNorm1d(embedding_size),
+                torch.nn.PReLU()
+            )
+        elif neck_type == "DLBA":
+            self.neck = nn.Sequential(
+                nn.Dropout(0.3),
+                nn.Linear(in_features=in_features, out_features=embedding_size, bias=True),
+                nn.BatchNorm1d(embedding_size),
+                torch.nn.PReLU()
+            )
+        elif neck_type == "LB":
+            self.neck = nn.Sequential(
+                nn.Linear(in_features=in_features, out_features=embedding_size, bias=False),
+                nn.BatchNorm1d(embedding_size),
+            )
+        elif neck_type == "":
+            self.dense_layer = torch.nn.Linear(in_features=in_features, out_features=embedding_size)
+
+        self.weight = nn.Parameter(torch.FloatTensor(out_features * k, embedding_size))  # (N*K)*F
         nn.init.xavier_uniform_(self.weight)
+
         self.k = k
         self.out_features = out_features
 
@@ -64,14 +80,20 @@ class ArcSubCentre(nn.Module):
         Returns:
             cosine distance between feature and subclass center
         """
-        # FIXME: This normalisation does not look super correct, it's minor detail but worth a fix
-        if self.dense_layer:
+
+        if self.neck_type in ["LBA", "DLBA", "LB"]:
+            features = self.neck(features)
+        else:
             features = self.dense_layer(features)
+
+        # FIXME: This normalisation does not look super correct when k>1, it's minor detail but worth a fix
         cosine_all = F.linear(F.normalize(features), F.normalize(self.weight))
         cosine_all = cosine_all.view(-1, self.out_features, self.k)  # (Batch, N, K)
         # find max cos similarities between feature vector and sub-center of each of N classes
         cosine, _ = torch.max(cosine_all, dim=2)
         return cosine
+
+
 
 
 class ArcMarginModelLoss(nn.Module):

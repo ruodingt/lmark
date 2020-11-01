@@ -36,7 +36,9 @@ class MetricLearningArch(nn.Module):
         self.cosine_similarity_to_sub_centers = ArcSubCentre(
             in_features=dim_backbone_feature_dim,
             out_features=cfg.MODEL.METRIC_LEARN.NUM_CLASSES,
-            k=cfg.MODEL.METRIC_LEARN.SUBCENTRES_K, mid_layer_size=cfg.MODEL.METRIC_LEARN.MID_FC_FEATURES)
+            k=cfg.MODEL.METRIC_LEARN.SUBCENTRES_K,
+            embedding_size=cfg.MODEL.METRIC_LEARN.EMBEDDING_SIZE,
+            neck_type=cfg.MODEL.METRIC_LEARN.BOTTLENECK_TYPE)
 
         if isinstance(cfg.MODEL.METRIC_LEARN.MARGINS.VALUE, list):
             margin = torch.tensor(cfg.MODEL.METRIC_LEARN.MARGINS.VALUE)
@@ -54,6 +56,7 @@ class MetricLearningArch(nn.Module):
                                               focal_loss=cfg.MODEL.METRIC_LEARN.LOSS.FOCAL_LOSS,
                                               gamma=cfg.MODEL.METRIC_LEARN.LOSS.GAMMA)
         else:
+            print("{} is not yet implemented".format(cfg.MODEL.METRIC_LEARN.LOSS.NAME))
             raise NotImplementedError()
 
         self.num_classes = cfg.MODEL.METRIC_LEARN.NUM_CLASSES
