@@ -27,6 +27,12 @@ By doing that we simplify the problems and concentrate on the basic model buildi
 
 # Previous Work and Review
 
+Stealing graphs from [insightface](https://github.com/deepinsight/insightface)
+
+![](https://raw.githubusercontent.com/deepinsight/insightface/master/resources/arcface.png)
+
+![](https://raw.githubusercontent.com/deepinsight/insightface/master/resources/subcenterarcfaceframework.png)
+
 1. [Kaggle Landmark 1st place solution](https://github.com/ruodingt/kaggle-landmark-recognition-2020-1st-place)
 2. [Kaggle Landmark 2nd place solution](https://github.com/ruodingt/instance_level_recognition)
 3. [Kaggle Landmark 3rd place solution](https://github.com/ruodingt/Google-Landmark-Recognition-2020-3rd-Place-Solution)
