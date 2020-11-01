@@ -59,7 +59,11 @@ result at this stage.
 Our default setting only includes `NUM_CLASSES: 27756` categories instead of all the 80K.
 We filtered out categories in the `train.csv` which have less than 15 images/category.
 
-With [exp7-res50.yaml](vit_metric/config/exp7-res50.yaml)
+With [exp7-res50.yaml](vit_metric/config/exp7-res50.yaml), 
+It only gets `0.04` for acc (0-1) and `0.006` for gap(0-1) after one epoch.
+
+Typical training schedule recommended by top Kaggler require 10 epoch, 
+which can take a few days without distributed training.
 
 
 ## Loss Function

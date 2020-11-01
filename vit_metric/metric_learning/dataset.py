@@ -21,6 +21,7 @@ def build_classification_loader(cfg, dataset_name, mapper=None, is_train=True):
     and uses batch size 1.
 
     Args:
+        is_train (bool):
         cfg: a detectron2 CfgNode
         dataset_name (str): a name of the dataset that's available in the DatasetCatalog
         mapper (callable): a callable which takes a sample (dict) from dataset
@@ -124,10 +125,7 @@ class CSVDataAPI:
 
 def register_lm_cls_datasets(data_config: ClsDataConfig):
     """
-    Add COCO datasets like "coco_train201x" to the registry,
-    so you can refer to them with names in `cfg.DATA.TRAIN/VAL`.
-
-    Note that train2017==trainval35k==train2014+val2014-minival2014, and val2017==minival2014.
+    register the classification dataset
     """
     # split_names = ['train', 'eval']
     csv_data_api = CSVDataAPI(data_config=data_config)
