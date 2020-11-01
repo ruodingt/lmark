@@ -70,6 +70,10 @@ We filtered out categories in the `train.csv` which have less than 15 images/cat
 
 With [exp7-res50.yaml](vit_metric/config/exp7-res50.yaml), 
 It gets `0.04` for acc (0-1) and `0.006` for gap(0-1) after one epoch. 
+
+With [exp11-res50.yaml](vit_metric/config/exp7-res50.yaml), 
+It gets `0.05` for acc (0-1) and `0.014` for gap(0-1) after one epoch. 
+
 It is unknown that whether it simply requires more epoch or it is already went wrong.
 
 Typical training schedule recommended by top Kaggler require 10 epoch, 
