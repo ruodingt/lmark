@@ -69,7 +69,7 @@ def build_classification_loader(cfg, dataset_name, mapper=None, is_train=True):
 
 
 class CsvImageDataset(Dataset):
-    def __init__(self, csv_dataframe, is_train):
+    def __init__(self, csv_dataframe: pd.DataFrame, is_train: bool):
         self.csv_df = csv_dataframe.reset_index()
         self.is_train = is_train
 
@@ -81,6 +81,11 @@ class CsvImageDataset(Dataset):
 
         d = {'fp': row.filepath, 'label': row.landmark_id}
         return d
+
+    def __iter__(self):
+        for row in self.csv_df.iterrows():
+            # Something I made up: converting row to dict
+            return row.to_dict()
 
 
 class CSVDataAPI:
